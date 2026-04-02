@@ -302,7 +302,7 @@
   }
 
   function playDemo() {
-    alert("Demo mode coming soon! We will simulate a double stop here.");
+    alert("demo mode coming soon! [insert yt link here]");
   }
 
   $: note1 = tuningData[0];
@@ -346,7 +346,7 @@
         <div class="note-row" id="note-1-container">
           {#if note1}
             <div class="note-label" style="color: {getColor(note1.cents)}">note one</div>
-            <div class="note display">
+            <div class="note-display">
               <span class="note-name">{note1.noteName}</span>
               <span class="octave">{note1.octave}</span>
               {#if Math.abs(note1.cents) > 0.5}
@@ -363,7 +363,7 @@
             </div>
           {:else}
             <div class="note-label">listening...</div>
-            <div class="note-display"><span class="note-name">---</span></div>
+            <div class="note-display"><span class="note-name">--</span></div>
             <div class="freq-cents"><span>0.00 Hz</span> | <span>0c</span></div>
           {/if}
         </div>
@@ -371,7 +371,7 @@
         {#if note2}
           <div class="note-row" id="note-2-container" transition:fade={{duration:250}}>
             <div class="note-label" style="color: {getColor(note2.cents)}">note two</div>
-            <div class="note display">
+            <div class="note-display">
               <span class="note-name">{note2.noteName}</span>
               <span class="octave">{note2.octave}</span>
               {#if Math.abs(note2.cents) > 0.5}
