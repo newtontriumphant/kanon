@@ -10,7 +10,7 @@ export const INTERVAL_NAMES = [
     "PERFECT 4TH", "TRITONE", "PERFECT 5TH", "MINOR 6TH", "MAJOR 6TH", 
     "MINOR 7TH", "MAJOR 7TH", "OCTAVE"
 ];
-export const FFT_SIZE = 16348;
+export const FFT_SIZE = 16384;
 let audioCtx, analyser, dataArray;
 let isRunning = false;
 export let noiseThreshold = -60;
@@ -43,7 +43,7 @@ export async function initAudio() {
     const stream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: false, autoGainControl: false, noiseSuppression: false }
     });
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    audioCtx = new (window.AudioContext)();
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = FFT_SIZE;
     analyser.smoothingTimeConstant = 0.1;
@@ -56,7 +56,7 @@ export function freqToNoteInfo(frequency) {
     if (frequency <= 0) return null;
     const midiNote = 69 + 12 * Math.log2(frequency / A4);
     const roundedMidi = Math.round(midiNote);
-    const noteIndex = (roundedMidi % 12. + 12) % 12;
+    const noteIndex = (roundedMidi % 12 + 12) % 12;
 
     const targetOffset = isDoubleStopMode ? PYTHAGOREAN_OFFSETS[noteIndex] : 0;
     const cents = (midiNote - roundedMidi) * 100 - targetOffset;
@@ -84,7 +84,7 @@ function getPeaks(data, sampleRate, fftSize) {
     const peaks = [];
     const binSize = sampleRate / fftSize;
     const startBin = Math.floor(50 / binSize); // ignore frequencies below 50Hz
-    const endBin = Math.ceil(5000 / binSize); // ignore frequencies above 5kHz
+    const endBin = Math.floor(5000 / binSize); // ignore frequencies above 5kHz
 
     for (let i = startBin; i < endBin; i++) {
         if (data[i] > noiseThreshold && data[i] > data[i-1] && data[i] > data[i+1]) {
