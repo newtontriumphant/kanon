@@ -9,6 +9,8 @@
   let tuningData = [];
   let canvas;
   let ctx;
+  let note1 = null;
+  let note2 = null;
   let threshold = -60;
   let sensitivity = 10;
   let a4Freq = 440;
@@ -302,7 +304,7 @@
   }
 
   function playDemo() {
-    alert("demo mode coming soon! [insert yt link here]");
+    window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");
   }
 
   $: note1 = tuningData[0];
@@ -351,7 +353,7 @@
               <span class="octave">{note1.octave}</span>
               {#if Math.abs(note1.cents) > 0.5}
                 <span class="tune-arrow" style="color: {getColor(note1.cents)}">
-                  {note1.cents > 0 ? '▲' : '▼'}
+                  {note1.cents > 0 ? '▼' : '▲'}
                 </span>
               {/if}
             </div>
@@ -376,7 +378,7 @@
               <span class="octave">{note2.octave}</span>
               {#if Math.abs(note2.cents) > 0.5}
                 <span class="tune-arrow" style="color: {getColor(note2.cents)}">
-                  {note2.cents > 0 ? '▲' : '▼'}
+                  {note2.cents > 0 ? '▼' : '▲'}
                 </span>
               {/if}
             </div>
@@ -416,6 +418,9 @@
       </div>
     </div>
   {/if}
+  <footer>
+    never stop playing!! ~udo funke :D
+  </footer>
 </main>
 
 <style>
@@ -427,11 +432,20 @@
     font-family: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 
+  footer {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-top: 40px;
+    padding: 20px;
+    border-top: 4px solid #000;
+  }
+
   #app {
     max-width: 900px;
     width: 100%;
     box-sizing: border-box;
-    margin: 40px auto;
+    margin: 20px auto;
     padding: 20px;
   }
 
@@ -440,22 +454,23 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 25px;
   }
 
   .zunable-badge {
     font-weight: 900;
     background: rgba(167, 243, 208, 0.8);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(40px);
     color: #000;
     display: inline-block;
     padding: 15px 30px;
     margin: 0 0 20px 0;
-    font-size: clamp(2rem, 8vw, 4rem);
-    letter-spacing: 4px;
-    text-transform: uppercase;
+    font-size: clamp(3rem, 8vw, 4rem);
+    letter-spacing: 8px;
+    /* text-transform: uppercase; */
     border: 4px solid #000;
     box-shadow: 8px 8px 0px 0px rgba(0,0,0,1);
+    text-shadow: 4px 4px 0px rgba(3, 83, 3, 0.2);
   }
 
   .demo-btn {
@@ -469,7 +484,7 @@
     border: 4px solid #000;
     box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
     transition: all 0.1s ease;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
     display: block; /* ensure margins apply */
     margin-bottom: 0; /* Clear bottom margin to prevent override */
   }
@@ -676,7 +691,7 @@
     text-align: center;
     min-height: clamp(350px, 40vh, 500px);
     justify-content: center;
-    gap: 30px;
+    gap: 15px;
     position: relative;
   }
 
