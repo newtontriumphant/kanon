@@ -25,7 +25,7 @@ For that reason, I designed kanōn. kanōn supports Pythagorean tuning, meaning 
 
 I made kanōn with the goal of spreading it to more musicians and actually using it in my daily practice, so please feel free to share this app if you liked it!
 
-**NOTE**: If you don't have an instrument (or don't play a tuning-based instrument), a demo video of kanōn featuring me playing my violin can be found here!
+**NOTE**: If you don't have an instrument (or don't play a tuning-based instrument), a demo video of kanōn featuring me playing my violin can be found [here](https://youtu.be/TkGcUEpJ7u8)!
 
 kanōn: the first open-source polyphonic tuner!
 

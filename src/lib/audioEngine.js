@@ -234,8 +234,10 @@ export function getTuningData() {
     const smoothedFundamentals = fundamentals.map((f, i) => {
         let smoothFreq = f.frequency;
         if (prevFreqs[i] && Math.abs(prevFreqs[i] - f.frequency) < 15) {
-            const smoothingFactor = isDoubleStopMode ? 0.4 : 0.1;
-            smoothFreq = prevFreqs[i] * smoothingFactor + f.frequency * (1 - smoothingFactor);
+            const freqDelta = Math.abs(prevFreqs[i] - f.frequency);
+            const relativeChange = freqDelta / prevFreqs[i];
+            const adaptiveFactor = Math.min(0.7, Math.max(0.05, 1 - Math.exp(-relativeChange * 200)));
+            smoothFreq = prevFreqs[i] * (1 - adaptiveFactor) + f.frequency * adaptiveFactor;
         }
         prevFreqs[i] = smoothFreq;
         return { frequency: smoothFreq, magnitude: f.magnitude };

@@ -304,7 +304,7 @@
   }
 
   function playDemo() {
-    window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "_blank");
+    window.open("https://youtu.be/TkGcUEpJ7u8", "_blank");
   }
 
   $: note1 = tuningData[0];
@@ -418,7 +418,7 @@
       </div>
     </div>
   {/if}
-  <footer>
+  <footer class="animate-drop" style="animation-delay: 0.4s">
     never stop playing!! ~udo funke :D
   </footer>
 </main>
@@ -487,6 +487,8 @@
     /* text-transform: uppercase; */
     display: block; /* ensure margins apply */
     margin-bottom: 0; /* Clear bottom margin to prevent override */
+    color: #000;
+    -webkit-text-fill-color: #000;
   }
 
   .demo-btn:hover {
