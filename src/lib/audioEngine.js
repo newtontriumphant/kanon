@@ -47,8 +47,39 @@ export async function initAudio() {
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = FFT_SIZE;
     analyser.smoothingTimeConstant = 0.1;
-    audioCtx.createMediaStreamSource(stream).connect(analyser);
+    const source = audioCtx.createMediaStreamSource(stream);
+    source.connect(analyser);
+    window.__kanon_stream = stream;
+    window.__kanon_source = source;
     dataArray = new Float32Array(analyser.frequencyBinCount);
+    isRunning = true;
+}
+
+export async function resumeAudio() {
+    if (!audioCtx) return;
+
+    // iOS suspends the context
+    if (audioCtx.state === 'suspended') {
+        await audioCtx.resume();
+    }
+
+    const stream = window.__kanon_stream;
+    if (stream) {
+        const allTracksLive = stream.getTracks().every(t => t.readyState === 'live');
+        if (!allTracksLive) {
+            const newStream = await navigator.mediaDevices.getUserMedia({
+                audio: { echoCancellation: false, autoGainControl: false, noiseSuppression: false }
+            });
+            if (window.__kanon_source) {
+                window.__kanon_source.disconnect();
+            }
+            const newSource = audioCtx.createMediaStreamSource(newStream);
+            newSource.connect(analyser);
+            window.__kanon_stream = newStream;
+            window.__kanon_source = newSource;
+        }
+    }
+
     isRunning = true;
 }
 

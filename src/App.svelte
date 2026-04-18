@@ -1,7 +1,7 @@
 <script>
   import { onMount, tick } from 'svelte';
   import { fade } from 'svelte/transition';
-  import { initAudio, getTuningData, setThreshold, setA4, setDoubleStopMode } from './lib/audioEngine.js';
+  import { initAudio, resumeAudio, getTuningData, setThreshold, setA4, setDoubleStopMode } from './lib/audioEngine.js';
 
 
   let started = false;
@@ -18,6 +18,7 @@
   let maxHistory = 300;
   let history1 = [];
   let history2 = [];
+  let isStandalone = false;
 
 
   $: if (started) {
@@ -28,6 +29,7 @@
 
 
   onMount(() => {
+    isStandalone = 'standalone' in navigator && navigator['standalone'] === true;
     maxHistory = window.innerWidth < 768 ? 150 : 300;
     history1 = Array(maxHistory).fill(null);
     history2 = Array(maxHistory).fill(null);
@@ -123,10 +125,36 @@
   async function start() {
     try {
       await initAudio();
+          // keep screen on while tuning
+      if ('wakeLock' in navigator) {
+        try {
+          let wakeLock = await navigator.wakeLock.request('screen');
+          document.addEventListener('visibilitychange', async () => {
+            if (document.visibilityState === 'visible') {
+              wakeLock = await navigator.wakeLock.request('screen');
+            }
+          });
+        } catch (e) { }
+      }
       started = true;
       await tick();
       setupCanvas();
       window.addEventListener('resize', setupCanvas);
+      const handleGesture = async () => {
+        await resumeAudio();
+      };
+      window.addEventListener('touchstart', handleGesture, { passive: true });
+      window.addEventListener('click', handleGesture, { passive: true });
+
+      document.addEventListener('visibilitychange', async () => {
+        if (document.visibilityState === 'visible') {
+          await resumeAudio();
+        }
+      });
+
+      window.addEventListener('pageshow', async (e) => {
+        if (e.persisted) await resumeAudio();
+      });
       requestAnimationFrame(update);
     } catch (e) {
       errorMsg = "mic denied or not available RAH";
@@ -313,6 +341,11 @@
 
 <svelte:head>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="kanōn">
+    <meta name="theme-color" content="#ecfdf5">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 </svelte:head>
 
 
@@ -320,9 +353,11 @@
 <main id="app">
   <header class="animate-drop" style="animation-delay: 0.1s">
     <div class="zunable-badge">kanōn</div>
-    <button class="demo-btn brutal-box" on:click={playDemo}>
-      no instrument on hand?! click me! :3
-    </button>
+    {#if !(isStandalone)}
+      <button class="demo-btn brutal-box" on:click={playDemo}>
+        no instrument on hand?! click me! :3
+      </button>
+    {/if}
   </header>
 
   {#if errorMsg}
